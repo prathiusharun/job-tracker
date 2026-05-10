@@ -74,6 +74,13 @@ Measured via PageSpeed Insights on production.
 - **Vercel** deployment and hosting
 
 ---
+## Docker
+
+```bash
+docker compose up
+```
+
+Nginx reverse proxy runs on port 80 and forwards to the Next.js app on port 3000.
 
 ## Key Engineering Decisions
 
