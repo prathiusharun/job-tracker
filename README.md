@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Job Tracker
 
-## Getting Started
+A full-stack SaaS application for tracking job applications through every stage of the hiring process.
 
-First, run the development server:
+**Live Demo**: https://job-tracker-henna-gamma.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## The Problem
+
+Job hunting is chaotic. Applications pile up across different companies, roles, and stages. Most people track this in spreadsheets — or don't track it at all. Job Tracker gives you one clean place to manage everything.
+
+---
+
+## Features
+
+- Google OAuth authentication
+- Add job applications with company, role, salary, location type, and employment type
+- Track application status — Applied, Interview, Offer, Rejected
+- Real-time status updates without page reload
+- Stats dashboard showing totals across every stage
+- Delete applications
+- Protected routes — unauthenticated users are redirected to login
+- Fully deployed and live in production
+
+---
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[Next.js Frontend]
+    B --> C{Authenticated?}
+    C -->|No| D[Redirect to Login]
+    C -->|Yes| E[Dashboard]
+    E --> F[Server Actions]
+    F --> G[Prisma ORM]
+    G --> H[PostgreSQL on Neon]
+    B --> I[NextAuth v5]
+    I --> J[Google OAuth]
+    I --> G
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Next.js 14** — App Router, Server Actions, Server Components
+- **TypeScript** — end to end type safety
+- **PostgreSQL** — hosted on Neon
+- **Prisma ORM** — database access and migrations
+- **NextAuth v5** — Google OAuth, database sessions
+- **Tailwind CSS** — styling
+- **Vercel** — deployment and hosting
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Key Engineering Decisions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Server Actions over API Routes** — reduced network overhead and simplified the data flow. Forms submit directly to server functions without a separate API layer.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Database sessions over JWT** — sessions are stored in PostgreSQL via NextAuth adapter. This allows instant session invalidation and avoids token management complexity.
 
-## Deploy on Vercel
+**Middleware route protection** — authentication is checked at the proxy layer before any page renders, keeping protection logic in one place rather than duplicated across pages.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Neon serverless PostgreSQL** — connection pooling via the Neon adapter handles the serverless cold start problem on Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Local Development
+
+```bash
+git clone https://github.com/prathiusharun/job-tracker
+cd job-tracker
+npm install
+```
+
+Create a `.env` file:
+
+```
+AUTH_SECRET=
+AUTH_URL=http://localhost:3000
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+DATABASE_URL=
+```
+
+```bash
+npx prisma migrate dev
+npm run dev
+```
+
+---
+
+## What's Next
+
+- Stripe integration — free tier limited to 10 applications, paid unlimited
+- Email reminders for follow-ups
+- Analytics — response rate, time to offer
+- Export to CSV
