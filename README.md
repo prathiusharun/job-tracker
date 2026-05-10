@@ -8,7 +8,7 @@ A full-stack SaaS application for tracking job applications through every stage 
 
 ## The Problem
 
-Job hunting is chaotic. Applications pile up across different companies, roles, and stages. Most people track this in spreadsheets — or don't track it at all. Job Tracker gives you one clean place to manage everything.
+Job hunting is chaotic. Applications pile up across different companies, roles, and stages. Most people track this in spreadsheets or don't track it at all. Job Tracker gives you one clean place to manage everything.
 
 ---
 
@@ -16,11 +16,11 @@ Job hunting is chaotic. Applications pile up across different companies, roles, 
 
 - Google OAuth authentication
 - Add job applications with company, role, salary, location type, and employment type
-- Track application status — Applied, Interview, Offer, Rejected
+- Track application status: Applied, Interview, Offer, Rejected
 - Real-time status updates without page reload
 - Stats dashboard showing totals across every stage
 - Delete applications
-- Protected routes — unauthenticated users are redirected to login
+- Protected routes so unauthenticated users are redirected to login
 - Fully deployed and live in production
 
 ---
@@ -45,25 +45,25 @@ flowchart TD
 
 ## Tech Stack
 
-- **Next.js 14** — App Router, Server Actions, Server Components
-- **TypeScript** — end to end type safety
-- **PostgreSQL** — hosted on Neon
-- **Prisma ORM** — database access and migrations
-- **NextAuth v5** — Google OAuth, database sessions
-- **Tailwind CSS** — styling
-- **Vercel** — deployment and hosting
+- **Next.js 14** App Router, Server Actions, Server Components
+- **TypeScript** end to end type safety
+- **PostgreSQL** hosted on Neon
+- **Prisma ORM** database access and migrations
+- **NextAuth v5** Google OAuth with database sessions
+- **Tailwind CSS** styling
+- **Vercel** deployment and hosting
 
 ---
 
 ## Key Engineering Decisions
 
-**Server Actions over API Routes** — reduced network overhead and simplified the data flow. Forms submit directly to server functions without a separate API layer.
+**Server Actions over API Routes** reduces network overhead and simplifies data flow. Forms submit directly to server functions without a separate API layer.
 
-**Database sessions over JWT** — sessions are stored in PostgreSQL via NextAuth adapter. This allows instant session invalidation and avoids token management complexity.
+**Database sessions over JWT** stores sessions in PostgreSQL via the NextAuth adapter. This allows instant session invalidation and avoids token management complexity.
 
-**Middleware route protection** — authentication is checked at the proxy layer before any page renders, keeping protection logic in one place rather than duplicated across pages.
+**Middleware route protection** checks authentication at the proxy layer before any page renders, keeping protection logic in one place rather than duplicated across pages.
 
-**Neon serverless PostgreSQL** — connection pooling via the Neon adapter handles the serverless cold start problem on Vercel.
+**Neon serverless PostgreSQL** handles connection pooling via the Neon adapter, solving the serverless cold start problem on Vercel.
 
 ---
 
@@ -94,7 +94,7 @@ npm run dev
 
 ## What's Next
 
-- Stripe integration — free tier limited to 10 applications, paid unlimited
+- Stripe integration with free tier limited to 10 applications and paid unlimited
 - Email reminders for follow-ups
-- Analytics — response rate, time to offer
+- Analytics including response rate and time to offer
 - Export to CSV
