@@ -3,56 +3,56 @@ import { auth } from "@/auth"
 import Link from "next/link"
 import StatusUpdate from "@/components/StatusUpdate"
 import DeleteButton from "@/components/DeleteButton"
+import SignOutButton from "@/components/SignOutButton"
 
 export default async function DashboardPage() {
   const session = await auth()
-  
 
   const applications = await db.jobApplication.findMany({
     where: { userId: session?.user?.id as string },
     orderBy: { createdAt: "desc" },
   })
 
-  
   const stats = {
-
-    
-  total: applications.length,
-  applied: applications.filter((a) => a.status === "applied").length,
-  interview: applications.filter((a) => a.status === "interview").length,
-  offer: applications.filter((a) => a.status === "offer").length,
-  rejected: applications.filter((a) => a.status === "rejected").length,
-}
-
+    total: applications.length,
+    applied: applications.filter((a) => a.status === "applied").length,
+    interview: applications.filter((a) => a.status === "interview").length,
+    offer: applications.filter((a) => a.status === "offer").length,
+    rejected: applications.filter((a) => a.status === "rejected").length,
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-8">
       <div className="flex justify-between items-center mb-6">
-        <div className="grid grid-cols-4 gap-4 mb-6">
-  <div className="border rounded-md p-4 text-center">
-    <p className="text-2xl font-bold">{stats.total}</p>
-    <p className="text-gray-500 text-sm">Total</p>
-  </div>
-  <div className="border rounded-md p-4 text-center">
-    <p className="text-2xl font-bold text-blue-600">{stats.applied}</p>
-    <p className="text-gray-500 text-sm">Applied</p>
-  </div>
-  <div className="border rounded-md p-4 text-center">
-    <p className="text-2xl font-bold text-yellow-600">{stats.interview}</p>
-    <p className="text-gray-500 text-sm">Interview</p>
-  </div>
-  <div className="border rounded-md p-4 text-center">
-    <p className="text-2xl font-bold text-green-600">{stats.offer}</p>
-    <p className="text-gray-500 text-sm">Offer</p>
-  </div>
-</div>
         <h1 className="text-2xl font-bold">My Applications</h1>
-        <Link
-          href="/dashboard/new"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-        >
-          Add Application
-        </Link>
+        <div className="flex gap-4 items-center">
+          <SignOutButton />
+          <Link
+            href="/dashboard/new"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          >
+            Add Application
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        <div className="border rounded-md p-4 text-center">
+          <p className="text-2xl font-bold">{stats.total}</p>
+          <p className="text-gray-500 text-sm">Total</p>
+        </div>
+        <div className="border rounded-md p-4 text-center">
+          <p className="text-2xl font-bold text-blue-600">{stats.applied}</p>
+          <p className="text-gray-500 text-sm">Applied</p>
+        </div>
+        <div className="border rounded-md p-4 text-center">
+          <p className="text-2xl font-bold text-yellow-600">{stats.interview}</p>
+          <p className="text-gray-500 text-sm">Interview</p>
+        </div>
+        <div className="border rounded-md p-4 text-center">
+          <p className="text-2xl font-bold text-green-600">{stats.offer}</p>
+          <p className="text-gray-500 text-sm">Offer</p>
+        </div>
       </div>
 
       {applications.length === 0 ? (
