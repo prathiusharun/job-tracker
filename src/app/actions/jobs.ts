@@ -10,6 +10,14 @@ export async function createJobApplication(formData: FormData) {
   if (!session?.user?.id) {
     redirect("/login")
   }
+    const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    include: { applications: true },
+  })
+
+  if (!user?.isPro && user!.applications.length >= 10) {
+    redirect("/upgrade")
+  }
 
   const companyName = formData.get("companyName") as string
   const roleTitle = formData.get("roleTitle") as string
@@ -55,4 +63,18 @@ export async function deleteApplication(id: string) {
   await db.jobApplication.delete({
     where: { id, userId: session.user.id },
   })
+}
+export async function upgradeToProAction() {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    redirect("/login")
+  }
+
+  await db.user.update({
+    where: { id: session.user.id },
+    data: { isPro: true },
+  })
+
+  redirect("/dashboard")
 }

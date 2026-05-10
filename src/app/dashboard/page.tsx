@@ -12,6 +12,10 @@ import { Button } from "@/components/ui/button"
 export default async function DashboardPage() {
   const session = await auth()
 
+  const user = await db.user.findUnique({
+    where: { id: session?.user?.id as string },
+  })
+
   const applications = await db.jobApplication.findMany({
     where: { userId: session?.user?.id as string },
     orderBy: { createdAt: "desc" },
@@ -36,8 +40,23 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto p-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Job Tracker</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">Job Tracker</h1>
+            {user?.isPro && (
+              <Badge variant="outline" className="text-yellow-500 border-yellow-500">
+                Pro
+              </Badge>
+            )}
+          </div>
           <div className="flex gap-3 items-center">
+            {!user?.isPro && (
+              <Link
+                href="/upgrade"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Upgrade to Pro
+              </Link>
+            )}
             <ThemeToggle />
             <SignOutButton />
             <Button asChild>
@@ -80,6 +99,22 @@ export default async function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {!user?.isPro && (
+          <Card className="mb-6 border-yellow-500/50 bg-yellow-500/5">
+            <CardContent className="flex justify-between items-center py-4">
+              <div>
+                <p className="font-semibold">Free Plan</p>
+                <p className="text-sm text-muted-foreground">
+                  {applications.length}/10 applications used
+                </p>
+              </div>
+              <Button asChild variant="outline" className="border-yellow-500 text-yellow-500 hover:bg-yellow-500/10">
+                <Link href="/upgrade">Upgrade to Pro</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {applications.length === 0 ? (
           <Card>
