@@ -43,6 +43,26 @@ flowchart TD
 
 ---
 
+## Performance
+
+Measured via PageSpeed Insights on production.
+
+**Desktop**
+- Performance: 100
+- Accessibility: 98
+- Best Practices: 100
+- SEO: 100
+- First Contentful Paint: 0.2s
+- Largest Contentful Paint: 0.4s
+
+**Mobile**
+- Performance: 98
+- Accessibility: 98
+- Best Practices: 100
+- SEO: 100
+- First Contentful Paint: 0.8s
+- Largest Contentful Paint: 2.0s
+
 ## Tech Stack
 
 - **Next.js 14** App Router, Server Actions, Server Components
