@@ -4,6 +4,10 @@ import Link from "next/link"
 import StatusUpdate from "@/components/StatusUpdate"
 import DeleteButton from "@/components/DeleteButton"
 import SignOutButton from "@/components/SignOutButton"
+import ThemeToggle from "@/components/ThemeToggle"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -21,66 +25,97 @@ export default async function DashboardPage() {
     rejected: applications.filter((a) => a.status === "rejected").length,
   }
 
+  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+    applied: "default",
+    interview: "secondary",
+    offer: "outline",
+    rejected: "destructive",
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">My Applications</h1>
-        <div className="flex gap-4 items-center">
-          <SignOutButton />
-          <Link
-            href="/dashboard/new"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >
-            Add Application
-          </Link>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Job Tracker</h1>
+          <div className="flex gap-3 items-center">
+            <ThemeToggle />
+            <SignOutButton />
+            <Button asChild>
+              <Link href="/dashboard/new">Add Application</Link>
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="border rounded-md p-4 text-center">
-          <p className="text-2xl font-bold">{stats.total}</p>
-          <p className="text-gray-500 text-sm">Total</p>
+        <div className="grid grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Total</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold">{stats.total}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Applied</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-blue-500">{stats.applied}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Interview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-yellow-500">{stats.interview}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-muted-foreground">Offer</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-3xl font-bold text-green-500">{stats.offer}</p>
+            </CardContent>
+          </Card>
         </div>
-        <div className="border rounded-md p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{stats.applied}</p>
-          <p className="text-gray-500 text-sm">Applied</p>
-        </div>
-        <div className="border rounded-md p-4 text-center">
-          <p className="text-2xl font-bold text-yellow-600">{stats.interview}</p>
-          <p className="text-gray-500 text-sm">Interview</p>
-        </div>
-        <div className="border rounded-md p-4 text-center">
-          <p className="text-2xl font-bold text-green-600">{stats.offer}</p>
-          <p className="text-gray-500 text-sm">Offer</p>
-        </div>
-      </div>
 
-      {applications.length === 0 ? (
-        <p className="text-gray-500">No applications yet. Add one!</p>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {applications.map((app) => (
-            <div key={app.id} className="border rounded-md p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h2 className="font-bold">{app.companyName}</h2>
-                  <p className="text-gray-600">{app.roleTitle}</p>
-                </div>
-                <DeleteButton id={app.id} />
-              </div>
-              <div className="flex gap-2 mt-2 items-center">
-                <StatusUpdate id={app.id} currentStatus={app.status} />
-                <span className="text-sm bg-gray-100 px-2 py-1 rounded">
-                  {app.locationType}
-                </span>
-                <span className="text-sm bg-gray-100 px-2 py-1 rounded">
-                  {app.employmentType}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+        {applications.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <p className="text-muted-foreground mb-4">No applications yet</p>
+              <Button asChild>
+                <Link href="/dashboard/new">Add your first application</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {applications.map((app) => (
+              <Card key={app.id}>
+                <CardContent className="flex justify-between items-center py-4">
+                  <div className="flex flex-col gap-1">
+                    <h2 className="font-semibold text-lg">{app.companyName}</h2>
+                    <p className="text-muted-foreground">{app.roleTitle}</p>
+                    <div className="flex gap-2 mt-1">
+                      <Badge variant={statusColors[app.status] || "default"}>
+                        {app.status}
+                      </Badge>
+                      <Badge variant="outline">{app.locationType}</Badge>
+                      <Badge variant="outline">{app.employmentType}</Badge>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <StatusUpdate id={app.id} currentStatus={app.status} />
+                    <DeleteButton id={app.id} />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
