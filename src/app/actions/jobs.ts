@@ -33,3 +33,26 @@ export async function createJobApplication(formData: FormData) {
 
   redirect("/dashboard")
 }
+export async function updateApplicationStatus(id: string, status: string) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    redirect("/login")
+  }
+
+  await db.jobApplication.update({
+    where: { id, userId: session.user.id },
+    data: { status },
+  })
+}
+export async function deleteApplication(id: string) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    redirect("/login")
+  }
+
+  await db.jobApplication.delete({
+    where: { id, userId: session.user.id },
+  })
+}
