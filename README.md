@@ -22,7 +22,10 @@ Job hunting is chaotic. Applications pile up across different companies, roles, 
 - Real-time status updates without page reload
 - Stats dashboard showing totals across every stage
 - Delete applications
+- Pro upgrade flow with free tier limit of 10 applications
+- Dark mode and light mode toggle
 - Protected routes so unauthenticated users are redirected to login
+- GitHub Actions CI pipeline with type checking and linting
 - Fully deployed and live in production
 
 ---
@@ -51,38 +54,38 @@ Measured via PageSpeed Insights on production.
 
 **Desktop**
 - Performance: 100
-- Accessibility: 98
+- Accessibility: 91
 - Best Practices: 100
 - SEO: 100
 - First Contentful Paint: 0.2s
 - Largest Contentful Paint: 0.4s
+- Total Blocking Time: 0ms
 
 **Mobile**
-- Performance: 98
-- Accessibility: 98
+- Performance: 99
+- Accessibility: 91
 - Best Practices: 100
 - SEO: 100
-- First Contentful Paint: 0.8s
+- First Contentful Paint: 1.1s
 - Largest Contentful Paint: 2.0s
+- Total Blocking Time: 30ms
+
+---
 
 ## Tech Stack
 
-- **Next.js 14** App Router, Server Actions, Server Components
+- **Next.js 16** App Router, Server Actions, Server Components
 - **TypeScript** end to end type safety
 - **PostgreSQL** hosted on Neon
 - **Prisma ORM** database access and migrations
 - **NextAuth v5** Google OAuth with database sessions
-- **Tailwind CSS** styling
+- **Tailwind CSS v4** styling
+- **shadcn/ui** component library
+- **Docker** containerization with Nginx reverse proxy
+- **GitHub Actions** CI pipeline with type checking and linting
 - **Vercel** deployment and hosting
 
 ---
-## Docker
-
-```bash
-docker compose up
-```
-
-Nginx reverse proxy runs on port 80 and forwards to the Next.js app on port 3000.
 
 ## Key Engineering Decisions
 
@@ -93,6 +96,16 @@ Nginx reverse proxy runs on port 80 and forwards to the Next.js app on port 3000
 **Middleware route protection** checks authentication at the proxy layer before any page renders, keeping protection logic in one place rather than duplicated across pages.
 
 **Neon serverless PostgreSQL** handles connection pooling via the Neon adapter, solving the serverless cold start problem on Vercel.
+
+---
+
+## Docker
+
+```bash
+docker compose up
+```
+
+Nginx reverse proxy runs on port 80 and forwards to the Next.js app on port 3000.
 
 ---
 
