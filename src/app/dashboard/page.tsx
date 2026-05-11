@@ -129,24 +129,21 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-4">
             {applications.map((app) => (
               <Card key={app.id}>
-                <CardContent className="flex justify-between items-center py-4">
-                  <div className="flex flex-col gap-1">
-                    <h2 className="font-semibold text-lg">{app.companyName}</h2>
-                    <p className="text-muted-foreground">{app.roleTitle}</p>
-                    <div className="flex gap-2 mt-1">
-                      <Badge variant={statusColors[app.status] || "default"}>
-                        {app.status}
-                      </Badge>
-                      <Badge variant="outline">{app.locationType}</Badge>
-                      <Badge variant="outline">{app.employmentType}</Badge>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 items-center">
-                    <StatusUpdate id={app.id} currentStatus={app.status} />
-                    <DeleteButton id={app.id} />
-                  </div>
-                </CardContent>
-              </Card>
+  <CardContent className="py-4">
+    <div className="flex justify-between items-start mb-3">
+      <div className="flex flex-col gap-1">
+        <h2 className="font-semibold text-lg">{app.companyName}</h2>
+        <p className="text-muted-foreground">{app.roleTitle}</p>
+      </div>
+      <DeleteButton id={app.id} />
+    </div>
+    <div className="flex flex-wrap gap-2 items-center">
+      <StatusUpdate id={app.id} currentStatus={app.status} />
+      <Badge variant="outline">{app.locationType}</Badge>
+      <Badge variant="outline">{app.employmentType}</Badge>
+    </div>
+  </CardContent>
+</Card>
             ))}
           </div>
         )}
