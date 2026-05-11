@@ -29,13 +29,6 @@ export default async function DashboardPage() {
     rejected: applications.filter((a) => a.status === "rejected").length,
   }
 
-  const statusColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-    applied: "default",
-    interview: "secondary",
-    offer: "outline",
-    rejected: "destructive",
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto p-8">
@@ -129,21 +122,24 @@ export default async function DashboardPage() {
           <div className="flex flex-col gap-4">
             {applications.map((app) => (
               <Card key={app.id}>
-  <CardContent className="py-4">
-    <div className="flex justify-between items-start mb-3">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-semibold text-lg">{app.companyName}</h2>
-        <p className="text-muted-foreground">{app.roleTitle}</p>
-      </div>
-      <DeleteButton id={app.id} />
-    </div>
-    <div className="flex flex-wrap gap-2 items-center">
-      <StatusUpdate id={app.id} currentStatus={app.status} />
-      <Badge variant="outline">{app.locationType}</Badge>
-      <Badge variant="outline">{app.employmentType}</Badge>
-    </div>
-  </CardContent>
-</Card>
+                <CardContent className="py-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex flex-col gap-1">
+                      <h2 className="font-semibold text-lg">{app.companyName}</h2>
+                      <p className="text-muted-foreground">{app.roleTitle}</p>
+                    </div>
+                    <DeleteButton id={app.id} />
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <StatusUpdate id={app.id} currentStatus={app.status} />
+                    <Badge variant={app.status === "rejected" ? "destructive" : app.status === "interview" ? "secondary" : "default"}>
+                      {app.status}
+                    </Badge>
+                    <Badge variant="outline">{app.locationType}</Badge>
+                    <Badge variant="outline">{app.employmentType}</Badge>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}

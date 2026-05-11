@@ -4,7 +4,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "@/lib/db"
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(db as any),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+adapter: PrismaAdapter(db as any),
   providers: [Google],
   pages: {
     signIn: "/login",
