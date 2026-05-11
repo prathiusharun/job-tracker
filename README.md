@@ -1,5 +1,7 @@
 # Job Tracker
 
+![CI](https://github.com/prathiusharun/job-tracker/actions/workflows/ci.yml/badge.svg)
+
 A full-stack SaaS application for tracking job applications through every stage of the hiring process.
 
 **Live Demo**: https://job-tracker-henna-gamma.vercel.app
