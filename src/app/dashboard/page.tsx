@@ -9,26 +9,47 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
+const start = Date.now()
+
 export default async function DashboardPage() {
   const session = await auth()
+const userId = session?.user?.id as string
 
-  const user = await db.user.findUnique({
-    where: { id: session?.user?.id as string },
-  })
+const user = await db.user.findUnique({
+  where: { id: userId },
+})
 
-  const applications = await db.jobApplication.findMany({
-    where: { userId: session?.user?.id as string },
+const [applications, grouped] = await Promise.all([
+  db.jobApplication.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
-  })
+    take: 50,
+  }),
 
-  const stats = {
-    total: applications.length,
-    applied: applications.filter((a) => a.status === "applied").length,
-    interview: applications.filter((a) => a.status === "interview").length,
-    offer: applications.filter((a) => a.status === "offer").length,
-    rejected: applications.filter((a) => a.status === "rejected").length,
-  }
+  db.jobApplication.groupBy({
+    by: ["status"],
+    where: { userId },
+    _count: {
+      status: true,
+    },
+  }),
+])
+const stats = {
+  total: 0,
+  applied: 0,
+  interview: 0,
+  offer: 0,
+  rejected: 0,
+}
 
+for (const item of grouped) {
+  const count = item._count.status
+
+  stats.total += count
+  stats[item.status as keyof typeof stats] = count
+}
+
+  console.log("/dashboard took", Date.now() - start, "ms")
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto p-8">
