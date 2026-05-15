@@ -98,6 +98,23 @@ Measured via PageSpeed Insights on production.
 **Neon serverless PostgreSQL** handles connection pooling via the Neon adapter, solving the serverless cold start problem on Vercel.
 
 ---
+## Performance & Engineering Improvements
+
+- Optimized dashboard performance using Prisma `groupBy` aggregation queries
+- Reduced database round-trips by consolidating stats computation into a single query
+- Implemented PostgreSQL indexing on `userId`, `status`, and `createdAt` for faster dashboard queries
+- Verified query performance under real usage via Next.js server logs
+- Improved CI stability by aligning Prisma configuration with Neon serverless connection requirements
+- Ensured compatibility between Prisma CLI migrations and pooled database connections (Neon pooling architecture)
+
+## Database & Infrastructure Notes
+
+- Uses Neon PostgreSQL with connection pooling for serverless compatibility
+- Prisma migrations managed via `prisma migrate dev` using direct database URL when required
+- Prisma client auto-generated on install via `postinstall` hook in CI/CD
+- Handles environment differences between local development and GitHub Actions CI
+
+---
 
 ## Docker
 
