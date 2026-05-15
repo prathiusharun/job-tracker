@@ -6,6 +6,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
 }
 
 model User {
@@ -68,4 +69,8 @@ model JobApplication {
   appliedDate    DateTime @default(now())
   notes          String?
   createdAt      DateTime @default(now())
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
+
 }
