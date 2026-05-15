@@ -16,20 +16,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ---------------------------
+      # Node setup + dependency cache
+      # ---------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "npm"
 
+      # ---------------------------
+      # Install dependencies (cached)
+      # ---------------------------
       - name: Install dependencies
         run: npm ci
 
+      # ---------------------------
+      # Prisma generate (IMPORTANT for CI consistency)
+      # ---------------------------
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      # ---------------------------
+      # Typecheck (fast fail)
+      # ---------------------------
       - name: Type check
         run: npx tsc --noEmit
 
+      # ---------------------------
+      # Lint (fast fail)
+      # ---------------------------
       - name: Lint
         run: npm run lint
 
+      # ---------------------------
+      # Build (expensive step LAST)
+      # ---------------------------
       - name: Build
         run: npm run build

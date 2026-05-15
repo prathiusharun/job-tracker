@@ -8,6 +8,10 @@ import ThemeToggle from "@/components/ThemeToggle"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  getDashboardStats,
+  getDashboardApplications,
+} from "@/lib/dashboard-cache"
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -25,39 +29,10 @@ export default async function DashboardPage() {
     where: { id: userId },
   })
 
-  const [applications, grouped] = await Promise.all([
-    db.jobApplication.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      take: 50,
-    }),
-
-    db.jobApplication.groupBy({
-      by: ["status"],
-      where: { userId },
-      _count: {
-        _all: true,
-      },
-    }),
-  ])
+const stats = await getDashboardStats(userId)
+const applications = await getDashboardApplications(userId)
 
   type Status = "applied" | "interview" | "offer" | "rejected"
-
-  const stats: Record<Status | "total", number> = {
-    total: 0,
-    applied: 0,
-    interview: 0,
-    offer: 0,
-    rejected: 0,
-  }
-
-  for (const item of grouped) {
-    const count = item._count._all
-    const status = item.status as Status
-
-    stats.total += count
-    stats[status] = count
-  }
 
   return (
     <div className="min-h-screen bg-background">
