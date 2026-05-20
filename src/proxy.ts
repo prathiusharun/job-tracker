@@ -5,7 +5,8 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   const hasSession =
-    request.cookies.get("session") || request.cookies.get("authjs.session-token")
+    request.cookies.get("__Secure-authjs.session-token") ||
+    request.cookies.get("authjs.session-token")
 
   if (pathname.startsWith("/dashboard") && !hasSession) {
     return NextResponse.redirect(new URL("/login", request.url))
