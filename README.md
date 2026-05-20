@@ -19,7 +19,7 @@ Job hunting is chaotic. Applications pile up across different companies, roles, 
 - Google OAuth authentication
 - Add job applications with company, role, salary, location type, and employment type
 - Track application status: Applied, Interview, Offer, Rejected
-- Real-time status updates without page reload
+- Optimistic UI updates for instant status changes before server confirmation
 - Stats dashboard showing totals across every stage
 - Delete applications
 - Pro upgrade flow with free tier limit of 10 applications
@@ -39,6 +39,7 @@ flowchart TD
     C -->|No| D[Redirect to Login]
     C -->|Yes| E[Dashboard]
     E --> F[Server Actions]
+    F --> K[Next.js Cache + revalidateTag]
     F --> G[Prisma ORM]
     G --> H[PostgreSQL on Neon]
     B --> I[NextAuth v5]
@@ -93,7 +94,9 @@ Measured via PageSpeed Insights on production.
 
 **Database sessions over JWT** stores sessions in PostgreSQL via the NextAuth adapter. This allows instant session invalidation and avoids token management complexity.
 
-**Middleware route protection** checks authentication at the proxy layer before any page renders, keeping protection logic in one place rather than duplicated across pages.
+**Middleware route protection** checks authentication at the proxy layer before pages render, preventing unauthenticated access centrally rather than duplicating checks across routes.
+
+**Production-safe secure cookie handling** detects both local development and HTTPS production Auth.js session cookies. This solved a real production-only authentication bug where sessions persisted correctly in the database but middleware failed to recognize secure cookies deployed on Vercel.
 
 **Neon serverless PostgreSQL** handles connection pooling via the Neon adapter, solving the serverless cold start problem on Vercel.
 
@@ -106,6 +109,10 @@ Measured via PageSpeed Insights on production.
 - Verified query performance under real usage via Next.js server logs
 - Improved CI stability by aligning Prisma configuration with Neon serverless connection requirements
 - Ensured compatibility between Prisma CLI migrations and pooled database connections (Neon pooling architecture)
+- Implemented optimistic UI patterns for near-instant application status updates
+- Added cache invalidation using Next.js `revalidateTag` for fresh dashboard data after mutations
+- Debugged and resolved a production-only Auth.js secure cookie issue affecting deployed authentication flows
+- Reduced dashboard interaction latency from ~3 seconds to sub-500ms updates
 
 ## Database & Infrastructure Notes
 
@@ -142,6 +149,7 @@ AUTH_URL=http://localhost:3000
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
 DATABASE_URL=
+DIRECT_URL=
 ```
 
 ```bash
@@ -149,11 +157,23 @@ npx prisma migrate dev
 npm run dev
 ```
 
+Run full local CI checks before pushing:
+
+```bash
+npm run ci:local
+```
+
 ---
+## Production Lessons Learned
+
+- HTTPS production deployments use secure Auth.js cookies (`__Secure-authjs.session-token`) instead of development cookie names
+- Serverless PostgreSQL environments require careful connection pooling configuration
+- CI/CD success does not guarantee production runtime correctness
+- Production debugging required tracing OAuth callbacks, middleware redirects, cookies, Prisma sessions, and deployment logs end to end
 
 ## What's Next
 
-- Stripe integration with free tier limited to 10 applications and paid unlimited
+- Payment integration using Razorpay or Stripe alternative for India
 - Email reminders for follow-ups
 - Analytics including response rate and time to offer
 - Export to CSV
