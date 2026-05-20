@@ -69,12 +69,42 @@ const applications = await getDashboardApplications(userId)
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          <Card><CardContent><p>{stats.total}</p></CardContent></Card>
-          <Card><CardContent><p>{stats.applied}</p></CardContent></Card>
-          <Card><CardContent><p>{stats.interview}</p></CardContent></Card>
-          <Card><CardContent><p>{stats.offer}</p></CardContent></Card>
-        </div>
+        <div className="grid grid-cols-5 gap-4 mb-8">
+  <Card>
+    <CardContent className="py-4">
+      <p className="text-sm text-muted-foreground">Total</p>
+      <p className="text-2xl font-bold">{stats.total}</p>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent className="py-4">
+      <p className="text-sm text-muted-foreground">Applied</p>
+      <p className="text-2xl font-bold">{stats.applied}</p>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent className="py-4">
+      <p className="text-sm text-muted-foreground">Interview</p>
+      <p className="text-2xl font-bold">{stats.interview}</p>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent className="py-4">
+      <p className="text-sm text-muted-foreground">Offer</p>
+      <p className="text-2xl font-bold">{stats.offer}</p>
+    </CardContent>
+  </Card>
+
+  <Card>
+    <CardContent className="py-4">
+      <p className="text-sm text-muted-foreground">Rejected</p>
+      <p className="text-2xl font-bold">{stats.rejected}</p>
+    </CardContent>
+  </Card>
+</div>
 
         {/* LIST */}
         {applications.length === 0 ? (

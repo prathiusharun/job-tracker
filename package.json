@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+     "ci:local": "npx prisma generate && npx tsc --noEmit && npm run lint && npm run build",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
